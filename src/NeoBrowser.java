@@ -59,12 +59,15 @@ public class NeoBrowser {
                         addToList(neoWS);
                         //Comment me to get all objects
                         //break; //Note Code gets only 40 as getting all the data with demo key cause server to throw error 429 after few requests. Too many requests
-                        
                     } else {
                         break;
                     }
+                } else {
+                    break;
                 }
             }
+
+            System.out.println(String.format("Total NEO(s) Recieved: %s", listNear_earth_objects.size()));
 
             System.out.println();
             System.out.println();
