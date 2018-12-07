@@ -16,7 +16,7 @@ import java.util.Scanner;
  * Daily Limit: 50 requests per IP address per day
  * With demo key server will throw error 429.
  *
- * @author root
+ * @author Kashif Mushtaq
  */
 public class NeoBrowser {
 
@@ -51,7 +51,7 @@ public class NeoBrowser {
 
             addToList(neoWS);
 
-            for (long i = 1; i < pageSize; ++i) {
+            for (long i = 1; i <= pageSize; ++i) {
                 String nextURL = neoWS.getLinks().getNext();
                 if (nextURL != null && nextURL != "") {
                     neoWS = getNeoWs(nextURL);
@@ -107,25 +107,18 @@ public class NeoBrowser {
                 }
             }            
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (NumberFormatException ex) {
+            System.out.println(String.format("Error:%n%s%n", ex.getMessage()));
         }
     }
 
     private static NeoWs getNeoWs(String requestURL) {
-        try {
-            URL neoRequest = new URL(requestURL);
-
-            Scanner scanner = new Scanner(neoRequest.openStream());
+        try(Scanner scanner = new Scanner(new URL(requestURL).openStream())) {
             String response = scanner.useDelimiter("\\Z").next();
-            
             //System.out.println(response);
-            
-            NeoWs neoWS = new Gson().fromJson(response, NeoWs.class);
-            scanner.close();
-            return neoWS;
+            return new Gson().fromJson(response, NeoWs.class);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            System.out.println(String.format("Error:%n%s%n", ex.getMessage()));
         }
         return null;
     }

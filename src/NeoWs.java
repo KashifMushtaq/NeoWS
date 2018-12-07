@@ -364,7 +364,12 @@ class Near_earth_objects implements Comparable {
         return this.getClass().getCanonicalName() + " [orbital_data = " + orbital_data + ", nasa_jpl_url = " + nasa_jpl_url + ", is_sentry_object = " + is_sentry_object + ", absolute_magnitude_h = " + absolute_magnitude_h + ", name = " + name + ", estimated_diameter = " + estimated_diameter + ", designation = " + designation + ", links = " + links + ", is_potentially_hazardous_asteroid = " + is_potentially_hazardous_asteroid + ", neo_reference_id = " + neo_reference_id + ", close_approach_data = " + Arrays.toString(close_approach_data) + "]";
     }
 
-    /*Comparator for sorting the list by  getEstimated_diameter_max*/
+    /**
+     * Comparator for sorting the list by getEstimated_diameter_max Parameters:
+     * o1 - the first object to be compared. o2 - the second object to be
+     * compared. Returns: A negative integer, zero, or a positive integer as the
+     * first argument is less than, equal to, or greater than the second.
+     */
     public static Comparator<Near_earth_objects> compDiameterInKM = new Comparator<>() {
 
         public int compare(Near_earth_objects s1, Near_earth_objects s2) {
@@ -375,13 +380,17 @@ class Near_earth_objects implements Comparable {
         }
     };
 
-    /*Comparator for sorting the list by  getEstimated_diameter_max*/
+    /**
+     * Comparator for sorting the list by getMiss_distance().getKilometers()
+     * Returned JSON payload does not always has data miss distance data for the
+     * NEO
+     */
     public static Comparator<Near_earth_objects> compMiss_distance = new Comparator<>() {
 
         public int compare(Near_earth_objects s1, Near_earth_objects s2) {
             Close_approach_data[] c1 = s1.getClose_approach_data();
             Close_approach_data[] c2 = s1.getClose_approach_data();
-            if(c1.length>0 && c2.length>0) {
+            if (c1.length > 0 && c2.length > 0) {
                 Double d1 = Double.parseDouble(c1[0].getMiss_distance().getKilometers());
                 Double d2 = Double.parseDouble(c2[0].getMiss_distance().getKilometers());
                 Double r = d2 - d1;
@@ -391,7 +400,7 @@ class Near_earth_objects implements Comparable {
             }
         }
     };
-    
+
     @Override
     public int compareTo(Object o) {
         Near_earth_objects s1 = (Near_earth_objects) o;
