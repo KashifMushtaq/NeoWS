@@ -53,7 +53,7 @@ public class NeoBrowser {
 
             for (long i = 1; i <= pageSize; ++i) {
                 String nextURL = neoWS.getLinks().getNext();
-                if (nextURL != null && nextURL != "") {
+                if (nextURL != null && !nextURL.trim().equals("")) {
                     neoWS = getNeoWs(nextURL);
                     if (neoWS != null) {
                         addToList(neoWS);
@@ -67,7 +67,7 @@ public class NeoBrowser {
                 }
             }
 
-            System.out.println(String.format("Total NEO(s) Recieved: %s", listNear_earth_objects.size()));
+            System.out.println(String.format("Total NEO(s) Received: %s", listNear_earth_objects.size()));
 
             System.out.println();
             System.out.println();
