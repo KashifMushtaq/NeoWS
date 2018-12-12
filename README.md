@@ -90,9 +90,10 @@ Near Earth Object: Name = 162038 (1996 DH), Diameter = 2.844722965 (KM)
 ```
 
 
-
+```
 From the List Received after Allowed Calls (30 in an hour, page size is 20 and can not get more)
 Nearest Object by Miss Distance: Name = 21277 (1996 TO5), Miss Distance = 5000341 (Kilometers)
+```
 
 # Details:
 
@@ -105,4 +106,229 @@ Near Earth Object List Sorted by Miss Distance (Kilometers - Ascending)
 Near Earth Object: Name = 21277 (1996 TO5), Miss Distance = 5000341 (Kilometers)
 Near Earth Object: Name = (1999 JO6), Miss Distance = 74194080 (Kilometers)
 
+```
+
+# Code
+The code comprise or 2 java files:
+1. NeoBrowser.java (Simple console application which makes recursive calls to fetch pagged JSON payload)
+
+
+```java
+public class NeoBrowser {
+
+    private static String NEO_SERVICE_URL = "https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=DEMO_KEY";
+    private static ArrayList<Near_earth_objects> listNear_earth_objects = new ArrayList<Near_earth_objects>();
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        try {
+
+            //final JsonReader reader = new JsonReader(new FileReader("/root/NetBeansProjects/javatest/browse.json"));
+            String requestURL = NEO_SERVICE_URL;
+
+            //get first batch of NEOs (default page size is 20
+            NeoWs neoWS = getNeoWs(requestURL);
+            if(neoWS==null) {
+                System.out.println(String.format("System appears to be down at URL: %s", requestURL));
+                return;
+            }
+            
+            Page p = neoWS.getPage();
+            long totalElements = Long.parseLong(p.getTotal_elements());
+            System.out.println(String.format("Total Near Earth Objects: %d", totalElements));
+
+            long pageSize = Long.parseLong(p.getSize());
+            System.out.println(String.format("Page Size: %d", pageSize));
+
+            long totalPages = Long.parseLong(p.getTotal_pages());
+            System.out.println(String.format("Total Pages: %d", totalPages));
+
+            addToList(neoWS);
+
+            for (long i = 1; i <= pageSize; ++i) {
+                String nextURL = neoWS.getLinks().getNext();
+                if (nextURL != null && !nextURL.trim().equals("")) {
+                    neoWS = getNeoWs(nextURL);
+                    if (neoWS != null) {
+                        addToList(neoWS);
+                        //Comment me to get all objects
+                        //break; //Note Code gets only 40 as getting all the data with demo key cause server to throw error 429 after few requests. Too many requests
+                    } else {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+
+            System.out.println(String.format("Total NEO(s) Received: %s", listNear_earth_objects.size()));
+
+            System.out.println();
+            System.out.println();
+            
+            Collections.sort(listNear_earth_objects, Near_earth_objects.compDiameterInKM);
+            System.out.println(String.format("Largest Near Earth Object: Name = %s, Diameter = %s (KM)", listNear_earth_objects.get(0).getName(), listNear_earth_objects.get(0).getEstimated_diameter().getKilometers().getEstimated_diameter_max()));
+            System.out.println(String.format("%s", listNear_earth_objects.get(0)));
+            
+            System.out.println();
+            System.out.println();
+            System.out.println(String.format("Near Earth Object List Sorted by Maximum Estimated Diameter (Kilometers - Descending)"));
+            for (Near_earth_objects o : listNear_earth_objects) {
+                System.out.println(String.format("Near Earth Object: Name = %s, Diameter = %s (KM)", o.getName(), o.getEstimated_diameter().getKilometers().getEstimated_diameter_max()));
+            }
+
+            
+            Collections.sort(listNear_earth_objects, Near_earth_objects.compMiss_distance);
+            
+            System.out.println();
+            System.out.println();
+            for (Near_earth_objects o : listNear_earth_objects) {
+                Close_approach_data[] c1 = o.getClose_approach_data();
+                if(c1.length>0) {
+                    System.out.println(String.format("Nearest Object by Miss Distance: Name = %s, Miss Distance = %s (Kilometers)", o.getName(), c1[0].getMiss_distance().getKilometers()));
+                    System.out.println(String.format("%s", o));
+                    break;
+                }
+            }  
+            
+            System.out.println();
+            System.out.println();
+            
+            System.out.println(String.format("Near Earth Object List Sorted by Miss Distance (Kilometers - Ascending)"));            
+            for (Near_earth_objects o : listNear_earth_objects) {
+                Close_approach_data[] c1 = o.getClose_approach_data();
+                if(c1.length>0) {
+                    System.out.println(String.format("Near Earth Object: Name = %s, Miss Distance = %s (Kilometers)", o.getName(), c1[0].getMiss_distance().getKilometers()));
+                } else {
+                    //System.out.println(String.format("Near Earth Object: Name = %s, Miss Distance = %s (KM)", o.getName(), "Data Not Available"));
+                }
+            }            
+
+        } catch (NumberFormatException ex) {
+            System.out.println(String.format("Error:%n%s%n", ex.getMessage()));
+        }
+    }
+
+    private static NeoWs getNeoWs(String requestURL) {
+        try(Scanner scanner = new Scanner(new URL(requestURL).openStream())) {
+            String response = scanner.useDelimiter("\\Z").next();
+            //System.out.println(response);
+            return new Gson().fromJson(response, NeoWs.class);
+        } catch (IOException ex) {
+            System.out.println(String.format("Error:%n%s%n", ex.getMessage()));
+        }
+        return null;
+    }
+
+    private static void addToList(NeoWs neoWS) {
+        for (Near_earth_objects o : neoWS.getNear_earth_objects()) {
+            listNear_earth_objects.add(o);
+        }
+    }
+}
+```
+
+
+2. NeoWs.java (Wraps one public class and all other support class - not created in separate files)
+
+
+```java
+public class NeoWs {
+
+    private Page page;
+
+    private Links links;
+
+    private Near_earth_objects[] near_earth_objects;
+
+    public Page getPage() {
+        return page;
+    }
+
+    public void setPage(Page page) {
+        this.page = page;
+    }
+
+    public Links getLinks() {
+        return links;
+    }
+
+    public void setLinks(Links links) {
+        this.links = links;
+    }
+
+    public Near_earth_objects[] getNear_earth_objects() {
+        return near_earth_objects;
+    }
+
+    public void setNear_earth_objects(Near_earth_objects[] near_earth_objects) {
+        this.near_earth_objects = near_earth_objects;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getCanonicalName() + " [page = " + page + ", links = " + links + ", near_earth_objects = " + near_earth_objects + "]";
+    }
+}
+```
+
+The JSON response provided by the **Neo Service** contains the URL to get next page of objects **(max returns 20 may be just with demo key)**.
+
+Code below makes the actual call to the service:
+This code also deserialize the JSON payload in NeoWS Object:
+
+```java
+    private static NeoWs getNeoWs(String requestURL) {
+        try(Scanner scanner = new Scanner(new URL(requestURL).openStream())) {
+            String response = scanner.useDelimiter("\\Z").next();
+            //System.out.println(response);
+            return new Gson().fromJson(response, NeoWs.class);
+        } catch (IOException ex) {
+            System.out.println(String.format("Error:%n%s%n", ex.getMessage()));
+        }
+        return null;
+    }
+```
+
+The data is kept in an ArrayList. This ArrayList is then sorted using object comparators in ** Near_earth_objects ** class by implementing Comparable interface:
+
+```java
+    /**
+     * Comparator for sorting the list by getEstimated_diameter_max Parameters:
+     * o1 - the first object to be compared. o2 - the second object to be
+     * compared. Returns: A negative integer, zero, or a positive integer as the
+     * first argument is less than, equal to, or greater than the second.
+     */
+    public static Comparator<Near_earth_objects> compDiameterInKM = new Comparator<Near_earth_objects>() {
+
+        public int compare(Near_earth_objects s1, Near_earth_objects s2) {
+            Double d1 = Double.parseDouble(s1.getEstimated_diameter().getKilometers().getEstimated_diameter_max());
+            Double d2 = Double.parseDouble(s2.getEstimated_diameter().getKilometers().getEstimated_diameter_max());
+            Double r = d2 - d1;
+            return r.intValue();
+        }
+    };
+
+    /**
+     * Comparator for sorting the list by getMiss_distance().getKilometers()
+     * Returned JSON payload does not always has data miss distance data for the
+     * NEO
+     */
+    public static Comparator<Near_earth_objects> compMiss_distance = new Comparator<Near_earth_objects>() {
+
+        public int compare(Near_earth_objects s1, Near_earth_objects s2) {
+            Close_approach_data[] c1 = s1.getClose_approach_data();
+            Close_approach_data[] c2 = s1.getClose_approach_data();
+            if (c1.length > 0 && c2.length > 0) {
+                Double d1 = Double.parseDouble(c1[0].getMiss_distance().getKilometers());
+                Double d2 = Double.parseDouble(c2[0].getMiss_distance().getKilometers());
+                Double r = d2 - d1;
+                return r.intValue();
+            } else {
+                return Integer.MAX_VALUE;
+            }
+        }
+    };
 ```
