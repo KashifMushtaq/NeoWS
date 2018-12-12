@@ -292,7 +292,7 @@ This code also deserialize the JSON payload in NeoWS Object:
     }
 ```
 
-The data is kept in an ArrayList. This ArrayList is then sorted using object comparators in ** Near_earth_objects ** class by implementing Comparable interface:
+The data is kept in an ArrayList. This ArrayList is then sorted using object comparators in **Near_earth_objects** class by implementing **Comparable** interface to get Largest and Nearest Object:
 
 ```java
     /**
