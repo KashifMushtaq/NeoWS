@@ -13,7 +13,6 @@ Outputs the total number of NEOs as well And the details are retrieved for both 
 
 # Gradle:
 ```gradle
-Gradle:
 dependencies {
   implementation 'com.google.code.gson:gson:2.8.5'
 }
