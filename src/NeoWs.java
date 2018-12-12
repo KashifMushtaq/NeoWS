@@ -370,7 +370,7 @@ class Near_earth_objects implements Comparable {
      * compared. Returns: A negative integer, zero, or a positive integer as the
      * first argument is less than, equal to, or greater than the second.
      */
-    public static Comparator<Near_earth_objects> compDiameterInKM = new Comparator<>() {
+    public static Comparator<Near_earth_objects> compDiameterInKM = new Comparator<Near_earth_objects>() {
 
         public int compare(Near_earth_objects s1, Near_earth_objects s2) {
             Double d1 = Double.parseDouble(s1.getEstimated_diameter().getKilometers().getEstimated_diameter_max());
@@ -385,7 +385,7 @@ class Near_earth_objects implements Comparable {
      * Returned JSON payload does not always has data miss distance data for the
      * NEO
      */
-    public static Comparator<Near_earth_objects> compMiss_distance = new Comparator<>() {
+    public static Comparator<Near_earth_objects> compMiss_distance = new Comparator<Near_earth_objects>() {
 
         public int compare(Near_earth_objects s1, Near_earth_objects s2) {
             Close_approach_data[] c1 = s1.getClose_approach_data();
