@@ -3,7 +3,8 @@
 Java application to get a list of “Near Earth Objects” using the NASA RESTful Web Service 
 # https://api.nasa.gov/api.html#NeoWS
 
-Identifies which NEO is the largest in size And which is the closest to Earth Outputs the total number of NEOs as well And the details are retrieved for both the largest and closest NEOs identified.
+Identifies which NEO is the largest in size And which is the closest to Earth.
+Outputs the total number of NEOs as well And the details are retrieved for both the largest and closest NEOs identified.
 
 
 # Dependencies:
