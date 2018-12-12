@@ -1,11 +1,64 @@
-# NeoWS
+# NewWS Client Program (created for ... as a test)
+
 Java application to get a list of “Near Earth Objects” using the NASA RESTful Web Service https://api.nasa.gov/api.html#NeoWS
 Identifies which NEO is the largest in size
 And which is the closest to Earth
 Outputs the total number of NEOs as well
 And the details are retrieved for both the largest and closest NEOs identified.
 
-Output Sample:
+
+# Dependencies:
+1. JDK (Compile)
+2. GSON (https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.5/gson-2.8.5.jar)
+
+Gradle:
+dependencies {
+  implementation 'com.google.code.gson:gson:2.8.5'
+}
+
+Maven:
+<dependency>
+  <groupId>com.google.code.gson</groupId>
+  <artifactId>gson</artifactId>
+  <version>2.8.5</version>
+</dependency>
+
+
+# To build:
+Please correct path <C:\Program Files\Java\jdk1.8.0_162\bin> to point to the JDK in build.bat and run it on Windows:
+The batch file looks like:
+
+# Windows Batch
+rmdir /S /Q %cd%\build
+mkdir %cd%\build
+cmd /c "C:\Program Files\Java\jdk1.8.0_162\bin\javac" -cp ./lib/gson-2.8.5.jar -d ./build ./src/*.java
+cd %cd%\build
+cmd /c "C:\Program Files\Java\jdk1.8.0_162\bin\jar" -cvfe NeoBrowser.jar *.class
+cd ..
+
+# Linux Bash:
+#!/bin/sh
+rm -r ./build
+mkdir -m777 ./build
+javac -cp ./lib/gson-2.8.5.jar -d ./build ./src/*.java
+cd ./build
+jar -cvfe NeoBrowser.jar *.class
+cd ..
+
+This will pack build and pack it as NeoBrowser.jar
+
+
+# To Run:
+1. Copy  gson-2.8.5.jar and NeoBrowser.jar in same folder
+2. From within the same folder:
+
+java -cp ./gson-2.8.5.jar:./NeoBrowser.jar NeoBrowser
+
+or use test.bat or test.sh
+
+
+# NeoBrowser.jar Output
+# Output Sample:
 Total Near Earth Objects: 19898
 Page Size: 20
 Total Pages: 995
