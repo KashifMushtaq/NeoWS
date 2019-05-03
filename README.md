@@ -111,7 +111,7 @@ Near Earth Object: Name = (1999 JO6), Miss Distance = 74194080 (Kilometers)
 ```
 
 # Code
-The code comprise or 2 java files:
+The code comprise of 2 java files:
 1. NeoBrowser.java (Simple console application which makes recursive calls to fetch pagged JSON payload)
 
 
