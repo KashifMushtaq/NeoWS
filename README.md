@@ -1,9 +1,9 @@
-# NewWS Client Program (created for ... as a test)
+# NewWS Client Program (created as a job test)
 
 Java application to get a list of “Near Earth Objects” using the NASA RESTful Web Service 
 # https://api.nasa.gov/api.html#NeoWS
 
-Identifies which NEO is the largest in size And which is the closest to Earth.
+Identifies which NEO is the largest in size and which is the closest to Earth.
 Outputs the total number of NEOs as well And the details are retrieved for both the largest and closest NEOs identified.
 
 
@@ -28,7 +28,8 @@ dependencies {
 ```
 
 # To build:
-Please correct path <C:\Program Files\Java\jdk1.8.0_162\bin> to point to the JDK in build.bat and run it on Windows:
+On Windows, please correct the path in build.bat file <C:\Program Files\Java\jdk1.8.0_162\bin> and to point it to the correct JDK's bin intallation folder:
+
 The batch file looks like:
 
 # Windows Batch
@@ -40,6 +41,7 @@ cd %cd%\build
 cmd /c "C:\Program Files\Java\jdk1.8.0_162\bin\jar" -cvfe NeoBrowser.jar *.class
 cd ..
 ```
+On Linux, if JDK is installed, run this shell script:
 
 # Linux Bash:
 ```bash
@@ -52,7 +54,7 @@ jar -cvfe NeoBrowser.jar *.class
 cd ..
 ```
 
-This will pack build and pack it as NeoBrowser.jar
+This will build all the java classes and pack them as NeoBrowser.jar
 
 
 # To Run:
